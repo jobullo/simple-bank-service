@@ -50,12 +50,22 @@ func Execute() {
 	fmt.Println("     Will read the record with the id of 7 in the SampleEntity table")
 	fmt.Println("$ delete —id 8 ")
 	fmt.Println("     Will delete the record with the id of 8 in the SampleEntity table.")
-	fmt.Println("$ update —id 3 —name Chris  —decription This is a updated record")
-	fmt.Println("     This is a updated record.")
+	fmt.Println("$ insert —name Chris —description \"Check this out\"")
+	fmt.Println("     Will insert a record with those details.")
+	fmt.Println("$ update —id 3 —name Chris —description  \"Check this out again\"")
+	fmt.Println("     Will update a updated record with that id.")
 	fmt.Println("-----------------------------")
 
 	fmt.Println(">> Please enter your first command to begin")
 	reader := bufio.NewReader(os.Stdin)
-	cmd, _ := reader.ReadString('\n')
-	HandleCommands(strings.TrimSpace(cmd), db)
+	for {
+		fmt.Print("Enter command (type 'quit' to quit): ")
+		cmd, _ := reader.ReadString('\n')
+		cmd = strings.TrimSpace(cmd)
+		if cmd == "quit" {
+			fmt.Println("Exiting the application...")
+			break
+		}
+		HandleCommands(cmd, db)
+	}
 }

@@ -5,7 +5,7 @@ import (
 
 	"zeroslope/config"
 	"zeroslope/database"
-	routes "zeroslope/http/routes"
+	"zeroslope/http/routes"
 
 	"github.com/gin-contrib/cors"
 )

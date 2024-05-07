@@ -1,7 +1,7 @@
 # Zeroslope GoLang Scaffold
 This is the zeroslope microservice architecture using GO. Average response times are around ~2ms for api calls that use a database, and non-database api calls ~28μs. Memory footprint seems to be around 9.9mb of ram allocated to the go process when running the most expensive call.
 
-Recently updated to reflect changes in GO 1.13.X.
+Recently updated to reflect changes in GO 1.22.X.
 
 ## Technologies
 Here is a list of the technologies used in this project:
