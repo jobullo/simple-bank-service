@@ -1,0 +1,21 @@
+database:
+  log_queries: true
+  timeout_seconds: 30
+  user: 
+  password: 
+  host: 
+  port: 
+  database: 
+
+server:
+  port: :8080
+  debug: true
+  read_timeout_seconds: 10
+  write_timeout_seconds: 5
+
+jwt:
+  secret: 
+  duration_minutes: 15
+
+application:
+  swagger_ui_path: src/assets/swaggerui
