@@ -3,16 +3,12 @@ package http
 import (
 	"fmt"
 
+	routes "zeroslope/cmd/http/routes"
 	"zeroslope/config"
 	"zeroslope/database"
-	"zeroslope/http/routes"
 
 	"github.com/gin-contrib/cors"
 )
-
-func main() {
-	Execute()
-}
 
 // @title ZeroSlope API
 // @version 2.0
@@ -45,5 +41,5 @@ func Execute() {
 	fmt.Println(">> Starting service ...")
 	router.Run(cfg.Server.Port)
 
-	fmt.Println("## Success! Service is available at http://localhost:%d", cfg.Server.Port)
+	fmt.Println("## Success! Service is available at http://localhost: %d", cfg.Server.Port)
 }
