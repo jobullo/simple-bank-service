@@ -5,11 +5,7 @@ Recently updated to reflect changes in GO 1.22.X.
 
 ## Technologies
 Here is a list of the technologies used in this project:
-* We use MODULES for package management.
-* We use SWAG for swagger generation.
-* We use DLV for Debugging in VSCODE
 * We use GIN for http routing.
-* We use VEGETA for load testing.
 * We use GORM for our ORM layer.
 * We use PG for postgres database access.
 
@@ -27,25 +23,22 @@ Here is an overall layout of what endpoints come with this architecture:
 | PUT    | /sample/               | Updates a record.                            |
 | DELETE | /sample/:id            | Deletes a record.                            |
 
+## Console app?
+I added a console app just to demonstrate package dependencies and ensure we dont bleed http functionality into places they should not be.
 
-## Development
-Currently I write my golang in VSCODE and use the following commands:
 
-### Installing dependencies
+## Installing dependencies
 ```bash
 go mod vendor
 ```
 
-### Running locally
+## Running Api locally
 ```bash
 go run main.go
 ```
 Visit: `http://localhost:8080/swagger/index.html`
 
-### Setting up postgres in docker
+## Setting up postgres in docker
 ```bash
 docker run --name pgdb -p 5432:5432 -e POSTGRES_PASSWORD=P4ssw0rd -e POSTGRES_DB=zeroslope -d postgres
 ```
-
-## Golang Dev Environment
-TBD
