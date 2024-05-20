@@ -7,7 +7,8 @@ import (
 	"os"
 	"strconv"
 	"strings"
-	"zeroslope/database"
+
+	"github.com/jobullo/go-api-example/database"
 )
 
 func main() {
@@ -15,7 +16,7 @@ func main() {
 }
 
 func Execute() {
-	fmt.Println("Thank you for using the ZeroSlope console application!")
+	fmt.Println("Thank you for using the bank example console application!")
 	fmt.Println("You can use this console to interact with the database. ")
 	fmt.Println("-----------------------------")
 

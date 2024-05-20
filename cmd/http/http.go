@@ -3,21 +3,21 @@ package http
 import (
 	"fmt"
 
-	routes "zeroslope/cmd/http/routes"
-	"zeroslope/config"
-	"zeroslope/database"
+	routes "go-api-example/cmd/http/routes"
+	"go-api-example/config"
+	"go-api-example/database"
 
 	"github.com/gin-contrib/cors"
 )
 
-// @title ZeroSlope API
+// @title bank-example API
 // @version 2.0
-// @description Zeroslope microservice architecture written in go
+// @description bank-example microservice architecture written in go
 // @securityDefinitions.apikey ApiKeyAuth
 // @in header
 // @name Authorization
 func Execute() {
-	fmt.Println("Thank you for using the ZeroSlope microservice!")
+	fmt.Println("Thank you for using the bank example microservice!")
 	fmt.Println("-----------------------------")
 
 	fmt.Println(">> Loading configuration ...")

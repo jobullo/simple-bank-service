@@ -40,5 +40,5 @@ Visit: `http://localhost:8080/swagger/index.html`
 
 ## Setting up postgres in docker
 ```bash
-docker run --name pgdb -p 5432:5432 -e POSTGRES_PASSWORD=P4ssw0rd -e POSTGRES_DB=zeroslope -d postgres
+docker run --name pgdb -p 5432:5432 -e POSTGRES_PASSWORD=P4ssw0rd -e POSTGRES_DB=bankExample -d postgres
 ```

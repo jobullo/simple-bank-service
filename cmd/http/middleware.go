@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strings"
 
-	"zeroslope/config"
+	"go-api-example/config"
 
 	"github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"

@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"zeroslope/database"
 
 	gorm "github.com/jinzhu/gorm"
+	database "github.com/jobullo/go-api-example/database"
 )
 
 func HandleCommands(cmd string, db *gorm.DB) {

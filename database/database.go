@@ -48,12 +48,23 @@ func Connect(dbinfo string) {
 // BuildDatabase sets up the database if there are no tables
 func BuildDatabase() {
 	if !db.HasTable(SampleEntity{}) {
-		err := db.CreateTable(SampleEntity{})
-		if err != nil {
+
+		if err := db.CreateTable(SampleEntity{}); err != nil {
+			log.Println("Table already exists")
+		}
+
+		if err := db.CreateTable(Account{}); err != nil {
+			log.Println("Table already exists")
+		}
+
+		if err := db.CreateTable(Transaction{}); err != nil {
 			log.Println("Table already exists")
 		}
 	}
+
 	db.AutoMigrate(SampleEntity{})
+	db.AutoMigrate(Account{})
+	db.AutoMigrate(Transaction{})
 }
 
 // Close closes the database connection

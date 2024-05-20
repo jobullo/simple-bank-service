@@ -1,8 +1,8 @@
 package routes
 
 import (
+	"go-api-example/database"
 	"net/http"
-	"zeroslope/database"
 
 	"github.com/gin-gonic/gin"
 )

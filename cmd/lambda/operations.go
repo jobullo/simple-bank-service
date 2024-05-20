@@ -2,10 +2,10 @@ package lambda
 
 import (
 	"context"
-	"zeroslope/database"
 
 	gorm "github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
+	database "github.com/jobullo/go-api-example/database"
 )
 
 func Create(ctx context.Context, db *gorm.DB, entity database.SampleEntity) (*database.SampleEntity, error) {

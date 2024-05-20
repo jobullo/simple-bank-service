@@ -1,6 +1,6 @@
 package main
 
-import runtime "zeroslope/cmd/console"
+import runtime "github.com/jobullo/go-api-example/cmd/console"
 
 // This is for running locally, so we
 // create a simple go module here to execute

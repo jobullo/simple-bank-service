@@ -6,10 +6,10 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"zeroslope/database"
 
-	"github.com/aws/aws-lambda-go/lambda"
+	lambda "github.com/aws/aws-lambda-go/lambda"
 	gorm "github.com/jinzhu/gorm"
+	database "github.com/jobullo/go-api-example/database"
 )
 
 func connectToDatabase() *gorm.DB {
