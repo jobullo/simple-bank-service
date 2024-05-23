@@ -1,11 +1,13 @@
 package database
 
+import "github.com/jinzhu/gorm"
+
 type Account struct {
-	Model          Model
-	AccountHolder  string        `json:"accountHolder"`
-	AccountNumber  uint          `json:"accountNumber"`
-	AccountHistory []Transaction `json:"accountHistory"`
-	Balance        float64       `json:"balance"`
+	gorm.Model                  //leaving this ananymous field here so gorm:embedded tag isn't necessary
+	AccountHolder string        `json:"accountHolder" binding:"required"`
+	AccountType   string        `json:"accountType" binding:"required"`
+	Balance       float64       `json:"balance" binding:"required"`
+	Transactions  []Transaction `json:"transactions"`
 }
 
 type AccountService interface {

@@ -6,6 +6,7 @@ import (
 	strconv "strconv"
 
 	gin "github.com/gin-gonic/gin"
+	"github.com/jobullo/go-api-example/database"
 )
 
 type TransactionController struct {
@@ -33,8 +34,9 @@ func (tc *TransactionController) Create(ctx *gin.Context) {
 }
 
 func (tc *TransactionController) Delete(ctx *gin.Context) {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
 
-	if id, err := strconv.ParseUint(ctx.Param("id"), 10, 32); err != nil {
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
 	}
