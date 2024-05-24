@@ -73,10 +73,20 @@ func (ts *TransactionService) FetchById(id int) (*database.Transaction, error) {
 }
 
 // implement the List method of the transaction service interface
-func (ts *TransactionService) List(id uint) (*[]database.Transaction, error) {
+func (ts *TransactionService) List() (*[]database.Transaction, error) {
 	var transactions []database.Transaction
 	//only return transactions associated with the account id
-	result := ts.db.Where("account_id = ?", id).Find(&transactions)
+	result := ts.db.Find(&transactions)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	return &transactions, nil
+}
+
+// list all transactions that belong to a specific account
+func (ts *TransactionService) ListByAccount(accountID uint) (*[]database.Transaction, error) {
+	var transactions []database.Transaction
+	result := ts.db.Where("account_id = ?", accountID).Find(&transactions)
 	if result.Error != nil {
 		return nil, result.Error
 	}

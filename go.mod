@@ -51,3 +51,7 @@ replace github.com/jobullo/go-api-example/cmd/console => "/Users/jbullock/Deskto
 replace github.com/jobullo/go-api-example/database => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/database"
 
 replace github.com/jobullo/go-api-example/config => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/config"
+
+replace github.com/jobullo/go-api-example/cmd/http/routes => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/http/routes"
+
+replace github.com/jobullo/go-api-example/cmd/http => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/http"

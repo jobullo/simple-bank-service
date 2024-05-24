@@ -3,9 +3,9 @@ package http
 import (
 	"fmt"
 
-	routes "go-api-example/cmd/http/routes"
-	"go-api-example/config"
-	"go-api-example/database"
+	routes "github.com/jobullo/go-api-example/cmd/http/routes"
+	config "github.com/jobullo/go-api-example/config"
+	database "github.com/jobullo/go-api-example/database"
 
 	"github.com/gin-contrib/cors"
 )

@@ -1,8 +1,9 @@
 package routes
 
 import (
-	"go-api-example/database"
 	"net/http"
+
+	database "github.com/jobullo/go-api-example/database"
 
 	"github.com/gin-gonic/gin"
 )

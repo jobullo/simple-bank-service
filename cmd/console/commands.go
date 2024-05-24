@@ -78,7 +78,10 @@ func handleAccountOperations(command string, argMap map[string]string, db *gorm.
 			return
 		}
 		account := database.Account{AccountHolder: ownerString, AccountType: typeString, Balance: balance}
-		newAccountService.Create(&account)
+		if err := newAccountService.Create(&account); err != nil {
+			fmt.Println("  Error creating account:", err)
+			return
+		}
 		fmt.Println("  Inserted new account with ID:", account.Model.ID)
 	default:
 		fmt.Println("  Unknown command.")
@@ -97,7 +100,7 @@ func handleTransactionOperations(command string, argMap map[string]string, db *g
 			fmt.Println("  Invalid Account ID:", idString)
 			return
 		}
-		transactions, err = newTransactionService.List(uint(id))
+		transactions, err = newTransactionService.ListByAccount(uint(id))
 		if err != nil {
 			fmt.Println("  Error fetching transactions:", err)
 		}

@@ -13,6 +13,7 @@ func SetupRouter(cfg config.Configuration) *gin.Engine {
 	router := gin.New()
 	router.Use(gin.Logger())
 	router.Use(gin.Recovery())
+	router.SetTrustedProxies([]string{"127.0.0.1"}) //only trust local proxy
 
 	router.Static("/swagger", "./path-to-swagger-ui")
 	router.StaticFile("/swagger.yaml", "./swagger.yaml")

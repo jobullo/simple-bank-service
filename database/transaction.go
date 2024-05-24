@@ -1,6 +1,8 @@
 package database
 
-import "github.com/jinzhu/gorm"
+import (
+	"github.com/jinzhu/gorm"
+)
 
 type Transaction struct {
 	gorm.Model          //leaving this ananymous field here so gorm:embedded tag isn't necessary
@@ -12,4 +14,5 @@ type Transaction struct {
 
 type TransactionService interface {
 	Service[Transaction]
+	ListByAccount(accountID uint) (*[]Transaction, error)
 }

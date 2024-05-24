@@ -1,9 +1,10 @@
-package http
+package routes
 
 import (
-	service "github.com/jobullo/go-api-example/service"
 	http "net/http"
 	strconv "strconv"
+
+	service "github.com/jobullo/go-api-example/service"
 
 	gin "github.com/gin-gonic/gin"
 	database "github.com/jobullo/go-api-example/database"
@@ -17,9 +18,16 @@ func NewAccountController(service *service.AccountService) *AccountController {
 	return &AccountController{service: service}
 }
 
+// Swagger:route POST /accounts accounts createAccount
+// Create a new account
+// responses:
+//
+//	200: accountResponse
+//	400: errorResponse
+//	500: errorResponse
 func (ac *AccountController) Create(ctx *gin.Context) {
-	var account database.Account
 
+	var account database.Account
 	if err := ctx.BindJSON(&account); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
@@ -33,9 +41,17 @@ func (ac *AccountController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
+// swagger:route DELETE /accounts/{id} accounts deleteAccount
+// Delete an account
+// responses:
+//
+//	200: accountResponse
+//	400: errorResponse
+//	500: errorResponse
 func (ac *AccountController) Delete(ctx *gin.Context) {
 
-	if id, err := strconv.ParseUint(ctx.Param("id"), 10, 32); err != nil {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
 	}
@@ -45,18 +61,26 @@ func (ac *AccountController) Delete(ctx *gin.Context) {
 		return
 	}
 
+	var account database.Account
 	ctx.JSON(http.StatusOK, account)
-
 }
 
+// swagger:route GET /accounts/{id} accounts fetchAccount
+// Fetch an account by id
+// responses:
+//
+//	200: accountResponse
+//	400: errorResponse
+//	500: errorResponse
 func (accountController *AccountController) FetchById(ctx *gin.Context) {
 
-	if id, err := strconv.ParseUint(ctx.Param("id"), 10, 32); err != nil {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
 	}
 
-	account, err := accountController.service.FetchById(id)
+	account, err := accountController.service.FetchById(uint(id))
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
@@ -66,6 +90,13 @@ func (accountController *AccountController) FetchById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
+// swagger:route GET /accounts accounts listAccounts
+// List all accounts
+// responses:
+//
+//	200: accountResponse
+//	400: errorResponse
+//	500: errorResponse
 func (ac *AccountController) List(ctx *gin.Context) {
 	accounts, err := ac.service.List()
 
@@ -77,16 +108,24 @@ func (ac *AccountController) List(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, accounts)
 }
 
+// swagger:route PUT /accounts/{id} accounts updateAccount
+// Update an account
+// responses:
+//
+//	200: accountResponse
+//	400: errorResponse
+//	500: errorResponse
 func (ac *AccountController) Update(ctx *gin.Context) {
-	
-	if id, err := strconv.ParseUint(ctx.Param("id"), 10, 32); err != nil {
+
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
 	}
 
-	
 	var account database.Account
-	if err := ctx.BindJSON(&account) err != nil {
+	if err := ctx.BindJSON(&account); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
 	}

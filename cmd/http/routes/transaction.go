@@ -1,12 +1,13 @@
-package http
+package routes
 
 import (
-	service "go-api-example/service"
 	http "net/http"
 	strconv "strconv"
 
+	service "github.com/jobullo/go-api-example/service"
+
 	gin "github.com/gin-gonic/gin"
-	"github.com/jobullo/go-api-example/database"
+	database "github.com/jobullo/go-api-example/database"
 )
 
 type TransactionController struct {
@@ -17,6 +18,13 @@ func NewTransactionController(service *service.TransactionService) *TransactionC
 	return &TransactionController{service: service}
 }
 
+// swagger:route POST /transactions transactions createTransaction
+// Create a new transaction
+// responses:
+//
+//	200: transactionResponse
+//	400: errorResponse
+//	500: errorResponse
 func (tc *TransactionController) Create(ctx *gin.Context) {
 	var transaction database.Transaction
 
@@ -33,6 +41,13 @@ func (tc *TransactionController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transaction)
 }
 
+// swagger:route DELETE /transactions/{id} transactions deleteTransaction
+// Delete a transaction
+// responses:
+//
+//	200: transactionResponse
+//	400: errorResponse
+//	500: errorResponse
 func (tc *TransactionController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
 
@@ -46,18 +61,28 @@ func (tc *TransactionController) Delete(ctx *gin.Context) {
 		return
 	}
 
+	var transaction database.Transaction
 	ctx.JSON(http.StatusOK, transaction)
 
 }
 
+// swagger:route GET /transactions/{id} transactions getTransaction
+// Get a transaction by id
+// responses:
+//
+//	200: transactionResponse
+//	400: errorResponse
+//	500: errorResponse
 func (transactionController *TransactionController) FetchById(ctx *gin.Context) {
 
-	if id, err := strconv.ParseUint(ctx.Param("id"), 10, 32); err != nil {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
 	}
 
-	transaction, err := transactionController.service.FetchById(id)
+	transaction, err := transactionController.service.FetchById(int(id))
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
@@ -68,6 +93,13 @@ func (transactionController *TransactionController) FetchById(ctx *gin.Context) 
 
 }
 
+// swagger:route GET /transactions transactions listTransactions
+// List all transactions
+// responses:
+//
+//	200: transactionsResponse
+//	400: errorResponse
+//	500: errorResponse
 func (transactionController *TransactionController) List(ctx *gin.Context) {
 
 	transactions, err := transactionController.service.List()
@@ -80,9 +112,44 @@ func (transactionController *TransactionController) List(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transactions)
 }
 
+// swagger:route GET /transactions/account/{accountID} transactions listTransactionsByAccount
+// List all transactions by account
+// responses:
+//
+//	200: transactionsResponse
+//	400: errorResponse
+//	500: errorResponse
+func (TransactionController *TransactionController) ListByAccount(ctx *gin.Context) {
+
+	id, err := strconv.ParseUint(ctx.Param("accountID"), 10, 32)
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
+		return
+	}
+
+	transactions, err := TransactionController.service.ListByAccount(uint(id))
+
+	if err != nil {
+		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
+		return
+	}
+
+	ctx.JSON(http.StatusOK, transactions)
+}
+
+// swagger:route PUT /transactions/{id} transactions updateTransaction
+// Update a transaction
+// responses:
+//
+//	200: transactionResponse
+//	400: errorResponse
+//	500: errorResponse
 func (transactionController *TransactionController) Update(ctx *gin.Context) {
 
-	if id, err := strconv.ParseUint(ctx.Param("id"), 10, 32); err != nil {
+	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
+
+	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
 		return
 	}
@@ -96,7 +163,7 @@ func (transactionController *TransactionController) Update(ctx *gin.Context) {
 
 	transaction.ID = uint(id)
 
-	if err := tc.service.Update(&transaction); err != nil {
+	if err := transactionController.service.Update(&transaction); err != nil {
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
 		return
 	}

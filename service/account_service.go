@@ -18,13 +18,13 @@ func NewAccountService(db *gorm.DB) *AccountService {
 }
 
 // implement the create a new account method of the account service interface
-func (ts *AccountService) Create(account *database.Account) (*database.Account, error) {
+func (ts *AccountService) Create(account *database.Account) error {
 
 	//create from provided account struct object
 	if result := ts.db.Create(account); result.Error != nil {
-		return nil, result.Error
+		return result.Error
 	}
-	return account, nil
+	return nil
 }
 
 // implement the FetchByID method of the account service interface
