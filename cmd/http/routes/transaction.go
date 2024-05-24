@@ -121,7 +121,7 @@ func (transactionController *TransactionController) List(ctx *gin.Context) {
 //	500: errorResponse
 func (TransactionController *TransactionController) ListByAccount(ctx *gin.Context) {
 
-	id, err := strconv.ParseUint(ctx.Param("accountID"), 10, 32)
+	id, err := strconv.ParseUint(ctx.Param("account_id"), 10, 32)
 
 	if err != nil {
 		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))

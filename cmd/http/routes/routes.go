@@ -40,18 +40,10 @@ func SetupRouter(cfg config.Configuration) *gin.Engine {
 		authRoutes.POST("/login", auth.Login)
 	}
 
-	// Sample endpoints
-	sample := new(SampleController)
-	sampleRoutes := router.Group("/samples")
-	{
-		sampleRoutes.GET("/", sample.List)
-		sampleRoutes.GET("/:id", sample.Read)
-		sampleRoutes.POST("/", sample.Create)
-		sampleRoutes.PUT("/", sample.Update)
-		sampleRoutes.DELETE("/:id", sample.List)
-	}
-
+	//get database instance pointer
 	db := database.GetDatabase()
+
+	//initialize account service and controller
 	accountService := service.NewAccountService(db)
 	accountController := NewAccountController(accountService)
 
@@ -65,13 +57,16 @@ func SetupRouter(cfg config.Configuration) *gin.Engine {
 		accountRoutes.DELETE("/:id", accountController.Delete)
 	}
 
-	// Transaction endpoints
+	//initialize transaction service and controller
 	transactionService := service.NewTransactionService(db, *accountService)
 	transactionController := NewTransactionController(transactionService)
+
+	// Transaction endpoints
 	transactionRoutes := router.Group("/transactions")
 	{
 		transactionRoutes.GET("/", transactionController.List)
 		transactionRoutes.GET("/:id", transactionController.FetchById)
+		transactionRoutes.GET("/:account_id", transactionController.ListByAccount)
 		transactionRoutes.POST("/", transactionController.Create)
 		transactionRoutes.PUT("/:id", transactionController.Update)
 		transactionRoutes.DELETE("/:id", transactionController.Delete)

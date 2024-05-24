@@ -16,7 +16,7 @@ type AuthController struct{}
 // @Tags Authentication
 // @Accept  json
 // @Produce  json
-// @Success 200 {object} models.AuthToken
+// @Success 200 {object} AuthToken
 // @Failure 401
 // @Router /auth/login [post]
 func (h AuthController) Login(c *gin.Context) {
