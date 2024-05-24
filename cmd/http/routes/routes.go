@@ -5,6 +5,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/jobullo/go-api-example/config"
+	"github.com/jobullo/go-api-example/database"
+	"github.com/jobullo/go-api-example/service"
 )
 
 // SetupRouter creates a router using middleware and controllers
@@ -49,25 +51,30 @@ func SetupRouter(cfg config.Configuration) *gin.Engine {
 		sampleRoutes.DELETE("/:id", sample.List)
 	}
 
+	db := database.GetDatabase()
+	accountService := service.NewAccountService(db)
+	accountController := NewAccountController(accountService)
+
 	// Account endpoints
-	account := new(AccountController)
 	accountRoutes := router.Group("/accounts")
 	{
-		accountRoutes.GET("/", account.List)
-		accountRoutes.GET("/:id", account.FetchById)
-		accountRoutes.POST("/", account.Create)
-		accountRoutes.PUT("/:id", account.Update)
-		accountRoutes.DELETE("/:id", account.Delete)
+		accountRoutes.GET("/", accountController.List)
+		accountRoutes.GET("/:id", accountController.FetchById)
+		accountRoutes.POST("/", accountController.Create)
+		accountRoutes.PUT("/:id", accountController.Update)
+		accountRoutes.DELETE("/:id", accountController.Delete)
 	}
 
-	transaction := new(TransactionController)
+	// Transaction endpoints
+	transactionService := service.NewTransactionService(db, *accountService)
+	transactionController := NewTransactionController(transactionService)
 	transactionRoutes := router.Group("/transactions")
 	{
-		transactionRoutes.GET("/", transaction.List)
-		transactionRoutes.GET("/:id", transaction.FetchById)
-		transactionRoutes.POST("/", transaction.Create)
-		transactionRoutes.PUT("/:id", transaction.Update)
-		transactionRoutes.DELETE("/:id", transaction.Delete)
+		transactionRoutes.GET("/", transactionController.List)
+		transactionRoutes.GET("/:id", transactionController.FetchById)
+		transactionRoutes.POST("/", transactionController.Create)
+		transactionRoutes.PUT("/:id", transactionController.Update)
+		transactionRoutes.DELETE("/:id", transactionController.Delete)
 	}
 
 	return router

@@ -23,6 +23,12 @@ func Execute() {
 	fmt.Println(">> Loading configuration ...")
 	cfg := config.LoadConfigFromPath("config.yaml")
 
+	fmt.Println(">> Connecting to database ...")
+	database.Init(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Port, cfg.DB.Database)
+
+	fmt.Println(">> Setting up database ...")
+	database.BuildDatabase()
+
 	fmt.Println(">> Loading routes ...")
 	router := routes.SetupRouter(cfg)
 
@@ -32,14 +38,8 @@ func Execute() {
 	fmt.Println(">> Loading api settings ...")
 	router.Use(cors.Default())
 
-	fmt.Println(">> Connecting to database ...")
-	database.Init(cfg.DB.User, cfg.DB.Password, cfg.DB.Host, cfg.DB.Port, cfg.DB.Database)
-
-	fmt.Println(">> Setting up database ...")
-	database.BuildDatabase()
-
 	fmt.Println(">> Starting service ...")
 	router.Run(cfg.Server.Port)
 
-	fmt.Println("## Success! Service is available at http://localhost: %d", cfg.Server.Port)
+	fmt.Printf("## Success! Service is available at http://localhost: %v\n", cfg.Server.Port)
 }
