@@ -31,7 +31,6 @@ func NewTransactionController(service *service.TransactionService) *TransactionC
 // @Failure 409
 // @Failure 500
 // @Router /transactions [post]
-
 func (tc *TransactionController) Create(ctx *gin.Context) {
 	var transaction database.Transaction
 
@@ -67,7 +66,6 @@ func (tc *TransactionController) Create(ctx *gin.Context) {
 // @Failure 404
 // @Failure 500
 // @Router /transactions/:id [delete]
-
 func (tc *TransactionController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
 

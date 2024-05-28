@@ -72,7 +72,7 @@ func (ts *AccountService) Update(account *database.Account) error {
 
 	// update the account holder
 	t.AccountHolder = account.AccountHolder
-	//t.Balance = account.Balance -- should updates to balance only be done through transactions?
+	t.Balance = account.Balance //-- should updates to balance only be done through transactions?
 
 	if resp := ts.db.Save(&t); resp.Error != nil {
 		return resp.Error

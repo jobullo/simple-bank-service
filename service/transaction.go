@@ -108,36 +108,6 @@ func (ts *TransactionService) ListByAccount(accountID uint) (*[]database.Transac
 	return ts.list(&criteria)
 }
 
-//func (ts *TransactionService) List(accountID uint) (*[]database.Transaction, error) {
-//	var transactions []database.Transaction
-//	//SELECT * FROM transactions WHERE account = accountID
-//	result := ts.db.Where("account = ?", accountID).Find(&transactions)
-//	if result.Error != nil {
-//		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-//			return nil, database.ErrParentNotFound
-//		}
-//		return nil, result.Error
-//	}
-//	return &transactions, nil
-//}
-
-// list all transactions that belong to a specific account
-//func (ts *TransactionService) ListByAccount(accountID uint) (*[]database.Transaction, error) {
-//	var transactions []database.Transaction
-//
-//	//SELECT * FROM transactions WHERE account = accountID
-//	result := ts.db.Where("account = ?", accountID).Find(&transactions)
-//
-//	if result.Error != nil {
-//		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
-//			return nil, database.ErrParentNotFound
-//		}
-//		return nil, result.Error
-//	}
-//
-//	return &transactions, nil
-//}
-
 // implements the Update method of the transaction service interface
 func (ts *TransactionService) Update(transaction *database.Transaction) error {
 	var t database.Transaction
