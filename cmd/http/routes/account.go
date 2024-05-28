@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"errors"
+	"fmt"
 	http "net/http"
 	strconv "strconv"
 
@@ -18,13 +20,16 @@ func NewAccountController(service *service.AccountService) *AccountController {
 	return &AccountController{service: service}
 }
 
-// Swagger:route POST /accounts accounts createAccount
-// Create a new account
-// responses:
-//
-//	200: accountResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary create an account record
+// @Description creates an account record in the DB
+// @Tags Accounts
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} database.Account
+// @Failure 400
+// @Failure 500
+// @Router /accounts [post]
 func (ac *AccountController) Create(ctx *gin.Context) {
 
 	var account database.Account
@@ -41,13 +46,17 @@ func (ac *AccountController) Create(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
-// swagger:route DELETE /accounts/{id} accounts deleteAccount
-// Delete an account
-// responses:
-//
-//	200: accountResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary delete an account record
+// @Description deletes an account record from the DB
+// @Tags Accounts
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 204
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /accounts/:id [delete]
 func (ac *AccountController) Delete(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -57,21 +66,30 @@ func (ac *AccountController) Delete(ctx *gin.Context) {
 	}
 
 	if err := ac.service.Delete(uint(id)); err != nil {
+
+		if errors.Is(err, database.ErrNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, NewError(fmt.Sprintf("Account with ID %d not found", id)))
+			return
+		}
+
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
 		return
 	}
 
-	var account database.Account
-	ctx.JSON(http.StatusOK, account)
+	ctx.Status(http.StatusNoContent)
 }
 
-// swagger:route GET /accounts/{id} accounts fetchAccount
-// Fetch an account by id
-// responses:
-//
-//	200: accountResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary fetches an account record by id
+// @Description fetches an account record by id from the DB
+// @Tags Accounts
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} database.Account
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /accounts/:id [get]
 func (accountController *AccountController) FetchById(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -83,6 +101,11 @@ func (accountController *AccountController) FetchById(ctx *gin.Context) {
 	account, err := accountController.service.FetchById(uint(id))
 
 	if err != nil {
+		if errors.Is(err, database.ErrNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, NewError(fmt.Sprintf("Account with ID %d not found", id)))
+			return
+		}
+
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
 		return
 	}
@@ -90,13 +113,15 @@ func (accountController *AccountController) FetchById(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, account)
 }
 
-// swagger:route GET /accounts accounts listAccounts
-// List all accounts
-// responses:
-//
-//	200: accountResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary list all account records
+// @Description lists all account records in the DB
+// @Tags Accounts
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} database.Account
+// @Failure 500
+// @Router /accounts [get]
 func (ac *AccountController) List(ctx *gin.Context) {
 	accounts, err := ac.service.List()
 
@@ -108,13 +133,17 @@ func (ac *AccountController) List(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, accounts)
 }
 
-// swagger:route PUT /accounts/{id} accounts updateAccount
-// Update an account
-// responses:
-//
-//	200: accountResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary update an account record
+// @Description updates an account record in the DB
+// @Tags Accounts
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} database.Account
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /accounts/:id [put]
 func (ac *AccountController) Update(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -133,6 +162,12 @@ func (ac *AccountController) Update(ctx *gin.Context) {
 	account.ID = uint(id)
 
 	if err := ac.service.Update(&account); err != nil {
+
+		if errors.Is(err, database.ErrNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, NewError(fmt.Sprintf("Account with ID %d not found", id)))
+			return
+		}
+
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
 		return
 	}

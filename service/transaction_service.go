@@ -19,11 +19,14 @@ func NewTransactionService(db *gorm.DB, accountService AccountService) *Transact
 	}
 }
 
-// implement the create a new transaction method of the transaction service interface
+// implements the create a new transaction method of the transaction service interface
 func (ts *TransactionService) Create(transaction *database.Transaction) error {
 	//check that the account exists
 	account, err := ts.accountService.FetchById(uint(transaction.AccountID))
 	if err != nil {
+		if errors.Is(err, database.ErrNotFound) {
+			return database.ErrParentNotFound
+		}
 		return err
 	}
 
@@ -43,7 +46,7 @@ func (ts *TransactionService) Create(transaction *database.Transaction) error {
 		} else if transaction.Type == "withdrawal" {
 			account.Balance -= transaction.Amount
 		} else {
-			return errors.New("invalid transaction type")
+			return database.ErrInvalidType
 		}
 
 		//now update the account
@@ -62,42 +65,93 @@ func (ts *TransactionService) Create(transaction *database.Transaction) error {
 	return nil
 }
 
-// implement the FetchByID method of the transaction service interface
+// implements the FetchByID method of the transaction service interface
 func (ts *TransactionService) FetchById(id int) (*database.Transaction, error) {
 	var transaction database.Transaction
-	result := ts.db.First(&transaction, id)
-	if result.Error != nil {
+	if result := ts.db.First(&transaction, id); result.Error != nil {
+
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, database.ErrNotFound
+		}
+
 		return nil, result.Error
 	}
+
 	return &transaction, nil
 }
 
-// implement the List method of the transaction service interface
+// implements the List method of the transaction service interface
 func (ts *TransactionService) List() (*[]database.Transaction, error) {
-	var transactions []database.Transaction
-	//only return transactions associated with the account id
-	result := ts.db.Find(&transactions)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &transactions, nil
+	return ts.list(nil)
 }
+
+// private of the transaction service
+func (ts *TransactionService) list(criteria *database.Transaction) (*[]database.Transaction, error) {
+
+	db := ts.db.Preload("Account") //preloads the account object
+
+	if criteria != nil {
+		db = db.Where(criteria)
+	}
+
+	var result []database.Transaction
+
+	if resp := db.Find(&result); resp.Error != nil {
+		return nil, resp.Error
+	}
+
+	return &result, nil
+}
+
+func (ts *TransactionService) ListByAccount(accountID uint) (*[]database.Transaction, error) {
+	criteria := database.Transaction{AccountID: uint32(accountID)}
+	return ts.list(&criteria)
+}
+
+//func (ts *TransactionService) List(accountID uint) (*[]database.Transaction, error) {
+//	var transactions []database.Transaction
+//	//SELECT * FROM transactions WHERE account = accountID
+//	result := ts.db.Where("account = ?", accountID).Find(&transactions)
+//	if result.Error != nil {
+//		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+//			return nil, database.ErrParentNotFound
+//		}
+//		return nil, result.Error
+//	}
+//	return &transactions, nil
+//}
 
 // list all transactions that belong to a specific account
-func (ts *TransactionService) ListByAccount(accountID uint) (*[]database.Transaction, error) {
-	var transactions []database.Transaction
-	result := ts.db.Where("account_id = ?", accountID).Find(&transactions)
-	if result.Error != nil {
-		return nil, result.Error
-	}
-	return &transactions, nil
-}
+//func (ts *TransactionService) ListByAccount(accountID uint) (*[]database.Transaction, error) {
+//	var transactions []database.Transaction
+//
+//	//SELECT * FROM transactions WHERE account = accountID
+//	result := ts.db.Where("account = ?", accountID).Find(&transactions)
+//
+//	if result.Error != nil {
+//		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+//			return nil, database.ErrParentNotFound
+//		}
+//		return nil, result.Error
+//	}
+//
+//	return &transactions, nil
+//}
 
-// implement the Update method of the transaction service interface
+// implements the Update method of the transaction service interface
 func (ts *TransactionService) Update(transaction *database.Transaction) error {
 	var t database.Transaction
 
+	//TODO: validate transaction amount
+	// - can't be <= 0 (transaction type determines if it subtracts or adds to the account balance)
+	// - for a withdrawal, the amount can't be greater than the account balance
+
 	if resp := ts.db.First(&t, transaction.Model.ID); resp.Error != nil {
+
+		if errors.Is(resp.Error, gorm.ErrRecordNotFound) {
+			return database.ErrNotFound
+		}
+
 		return resp.Error
 	}
 
@@ -114,12 +168,13 @@ func (ts *TransactionService) Update(transaction *database.Transaction) error {
 	return nil
 }
 
-// implement the delete method of the transaction service interface
+// implements the delete method of the transaction service interface
 func (ts *TransactionService) Delete(id uint) error {
 	var transaction database.Transaction
-	result := ts.db.Delete(&transaction, id)
-	if result.Error != nil {
-		return result.Error
+
+	if result := ts.db.First(&transaction, id); errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		return database.ErrNotFound
 	}
-	return nil
+
+	return ts.db.Delete(&transaction, id).Error
 }

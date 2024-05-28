@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"errors"
+	"fmt"
 	http "net/http"
 	strconv "strconv"
 
@@ -18,13 +20,18 @@ func NewTransactionController(service *service.TransactionService) *TransactionC
 	return &TransactionController{service: service}
 }
 
-// swagger:route POST /transactions transactions createTransaction
-// Create a new transaction
-// responses:
-//
-//	200: transactionResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary create a transaction record
+// @Description allows a transaction to be created in the database if the account exists
+// @Tags Tranasctions
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} database.Transaction
+// @Failure 400
+// @Failure 409
+// @Failure 500
+// @Router /transactions [post]
+
 func (tc *TransactionController) Create(ctx *gin.Context) {
 	var transaction database.Transaction
 
@@ -34,20 +41,33 @@ func (tc *TransactionController) Create(ctx *gin.Context) {
 	}
 
 	if err := tc.service.Create(&transaction); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
+
+		switch {
+		case errors.Is(err, database.ErrParentNotFound):
+			ctx.AbortWithStatusJSON(http.StatusConflict, NewError(fmt.Sprintf("Account with ID %d not found", transaction.AccountID)))
+		case errors.Is(err, database.ErrInvalidType):
+			ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(fmt.Sprintf("Invalid transaction type %s", transaction.Type)))
+		default:
+			ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
+		}
 		return
 	}
 
 	ctx.JSON(http.StatusOK, transaction)
 }
 
-// swagger:route DELETE /transactions/{id} transactions deleteTransaction
-// Delete a transaction
-// responses:
-//
-//	200: transactionResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary delete a transaction record
+// @Description allows a transaction to be deleted from the database
+// @Tags Tranasctions
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce no content
+// @Success 204
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /transactions/:id [delete]
+
 func (tc *TransactionController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
 
@@ -57,22 +77,29 @@ func (tc *TransactionController) Delete(ctx *gin.Context) {
 	}
 
 	if err := tc.service.Delete(uint(id)); err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
+		if errors.Is(err, database.ErrNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, NewError(fmt.Sprintf("Transaction with ID %d not found", id)))
+		} else {
+			ctx.AbortWithError(http.StatusInternalServerError, err)
+		}
 		return
 	}
 
-	var transaction database.Transaction
-	ctx.JSON(http.StatusOK, transaction)
+	ctx.Status(http.StatusNoContent)
 
 }
 
-// swagger:route GET /transactions/{id} transactions getTransaction
-// Get a transaction by id
-// responses:
-//
-//	200: transactionResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary delete a transaction record
+// @Description allows a transaction to be deleted from the database
+// @Tags Tranasctions
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 204 {object} database.Transaction
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /transactions/:id [get]
 func (transactionController *TransactionController) FetchById(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -85,6 +112,12 @@ func (transactionController *TransactionController) FetchById(ctx *gin.Context) 
 	transaction, err := transactionController.service.FetchById(int(id))
 
 	if err != nil {
+
+		if errors.Is(err, database.ErrNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, NewError(fmt.Sprintf("Transaction with ID %d not found", id)))
+			return
+		}
+
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
 		return
 	}
@@ -93,13 +126,15 @@ func (transactionController *TransactionController) FetchById(ctx *gin.Context) 
 
 }
 
-// swagger:route GET /transactions transactions listTransactions
-// List all transactions
-// responses:
-//
-//	200: transactionsResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary list all transaction records
+// @Description lists all transaction records in the DB
+// @Tags Tranasctions
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {array} database.Transaction
+// @Failure 500
+// @Router /transactions [get]
 func (transactionController *TransactionController) List(ctx *gin.Context) {
 
 	transactions, err := transactionController.service.List()
@@ -112,39 +147,17 @@ func (transactionController *TransactionController) List(ctx *gin.Context) {
 	ctx.JSON(http.StatusOK, transactions)
 }
 
-// swagger:route GET /transactions/account/{accountID} transactions listTransactionsByAccount
-// List all transactions by account
-// responses:
-//
-//	200: transactionsResponse
-//	400: errorResponse
-//	500: errorResponse
-func (TransactionController *TransactionController) ListByAccount(ctx *gin.Context) {
-
-	id, err := strconv.ParseUint(ctx.Param("account_id"), 10, 32)
-
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusBadRequest, NewError(err.Error()))
-		return
-	}
-
-	transactions, err := TransactionController.service.ListByAccount(uint(id))
-
-	if err != nil {
-		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
-		return
-	}
-
-	ctx.JSON(http.StatusOK, transactions)
-}
-
-// swagger:route PUT /transactions/{id} transactions updateTransaction
-// Update a transaction
-// responses:
-//
-//	200: transactionResponse
-//	400: errorResponse
-//	500: errorResponse
+// @Summary update the amount of a transaction record
+// @Description update the amount of a transaction record
+// @Tags Tranasctions
+// @Security ApiKeyAuth
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} database.Transaction
+// @Failure 400
+// @Failure 404
+// @Failure 500
+// @Router /transactions/:id [put]
 func (transactionController *TransactionController) Update(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -164,6 +177,12 @@ func (transactionController *TransactionController) Update(ctx *gin.Context) {
 	transaction.ID = uint(id)
 
 	if err := transactionController.service.Update(&transaction); err != nil {
+
+		if errors.Is(err, database.ErrNotFound) {
+			ctx.AbortWithStatusJSON(http.StatusNotFound, NewError(fmt.Sprintf("Transaction with ID %d not found", id)))
+			return
+		}
+
 		ctx.AbortWithStatusJSON(http.StatusInternalServerError, NewError(err.Error()))
 		return
 	}

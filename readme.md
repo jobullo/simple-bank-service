@@ -1,6 +1,6 @@
 
 
-# Simple Banking Example GoLang Scaffold
+# Simple Banking Service Example
 This project leverages the Golang API Scafold by [Chris Fryer](https://github.com/cfryerdev/golang-api-scaffold) and a design pattern from [Kenny McClive's](https://github.com/kmcclive/go-api-pattern) example project
 
 Recently updated to reflect changes in GO 1.22.X.
@@ -26,7 +26,6 @@ Here is an overall layout of what endpoints come with this architecture:
 | DELETE | /accounts/:id              | Deletes a record.                            |
 | GET    | /transactions              | Gets a list of records.                      |
 | GET    | /transactions/:id          | Gets a record by id.                         |
-| GET    | /transactions/:account_id  | Gets a list of records for an account id.    |
 | POST   | /transactions/             | Creates a record.                            |
 | PUT    | /transactions/:id          | Updates a record.                            |
 | DELETE | /transactions/:id          | Deletes a record.                            |
@@ -46,4 +45,9 @@ Visit: `http://localhost:8080/swagger/index.html`
 ## Setting up postgres in docker
 ```bash
 docker run --name pgdb -p 5432:5432 -e POSTGRES_PASSWORD=P4ssw0rd -e POSTGRES_DB=bankExample -d postgres
+```
+
+## setting up an interactive shell into the container
+```bash 
+docker exec -it <container id> psql -U postgres -d bankExample
 ```

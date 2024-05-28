@@ -66,7 +66,6 @@ func SetupRouter(cfg config.Configuration) *gin.Engine {
 	{
 		transactionRoutes.GET("/", transactionController.List)
 		transactionRoutes.GET("/:id", transactionController.FetchById)
-		transactionRoutes.GET("/:account_id", transactionController.ListByAccount)
 		transactionRoutes.POST("/", transactionController.Create)
 		transactionRoutes.PUT("/:id", transactionController.Update)
 		transactionRoutes.DELETE("/:id", transactionController.Delete)

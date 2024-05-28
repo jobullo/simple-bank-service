@@ -20,6 +20,11 @@ func NewAccountService(db *gorm.DB) *AccountService {
 // implement the create a new account method of the account service interface
 func (ts *AccountService) Create(account *database.Account) error {
 
+	//TODO - add validation
+	// - balance is not negative
+	// - account name is not empty
+	// - account type is not empty and is a valid type
+
 	//create from provided account struct object
 	if result := ts.db.Create(account); result.Error != nil {
 		return result.Error
@@ -32,8 +37,13 @@ func (ts *AccountService) FetchById(id uint) (*database.Account, error) {
 	var account database.Account
 	//account ids are unique, so we can use First
 	if result := ts.db.First(&account, id); result.Error != nil {
+		if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+			return nil, database.ErrNotFound
+		}
+
 		return nil, result.Error
 	}
+
 	return &account, nil
 }
 
@@ -52,12 +62,17 @@ func (ts *AccountService) Update(account *database.Account) error {
 	var t database.Account
 	// fetch the account by id
 	if resp := ts.db.First(&t, account.Model.ID); resp.Error != nil {
+		if errors.Is(resp.Error, gorm.ErrRecordNotFound) {
+			return database.ErrNotFound
+		}
 		return resp.Error
 	}
 
+	//TODO: Need to check that the account holder is not empty or is not the same as the current account holder
+
 	// update the account holder
 	t.AccountHolder = account.AccountHolder
-	t.Balance = account.Balance
+	//t.Balance = account.Balance -- should updates to balance only be done through transactions?
 
 	if resp := ts.db.Save(&t); resp.Error != nil {
 		return resp.Error
@@ -75,7 +90,7 @@ func (s *AccountService) Delete(id uint) error {
 	var account database.Account
 
 	if resp := s.db.First(&account, id); errors.Is(resp.Error, gorm.ErrRecordNotFound) {
-		return gorm.ErrRecordNotFound
+		return database.ErrNotFound
 	}
 
 	return s.db.Delete(&account).Error
