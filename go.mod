@@ -65,13 +65,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	sigs.k8s.io/yaml v1.4.0 // indirect
 )
-
-replace github.com/jobullo/go-api-example/cmd/console => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/cmd/console"
-
-replace github.com/jobullo/go-api-example/database => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/database"
-
-replace github.com/jobullo/go-api-example/config => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/config"
-
-replace github.com/jobullo/go-api-example/cmd/http/routes => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/http/routes"
-
-replace github.com/jobullo/go-api-example/cmd/http => "/Users/jbullock/Desktop/coding projects/Go learning/my_api_example/http"
