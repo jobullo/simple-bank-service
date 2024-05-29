@@ -6,7 +6,10 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jobullo/go-api-example/config"
 	"github.com/jobullo/go-api-example/database"
+	_ "github.com/jobullo/go-api-example/docs"
 	"github.com/jobullo/go-api-example/service"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 )
 
 // SetupRouter creates a router using middleware and controllers
@@ -17,8 +20,8 @@ func SetupRouter(cfg config.Configuration) *gin.Engine {
 	router.Use(gin.Recovery())
 	router.SetTrustedProxies([]string{"127.0.0.1"}) //only trust local proxy
 
-	router.Static("/swagger", "./path-to-swagger-ui")
-	router.StaticFile("/swagger.yaml", "./swagger.yaml")
+	//set up swagger
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Redirect the root to swagger
 	router.GET("/", func(c *gin.Context) {

@@ -21,14 +21,18 @@ func NewAccountController(service *service.AccountService) *AccountController {
 }
 
 // @Summary create an account record
+// @api {post} /accounts
+// @apiName CreateAccount
+// @apiGroup Accounts
+// @Param account body database.Account true "create account"
 // @Description creates an account record in the DB
 // @Tags Accounts
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} database.Account
-// @Failure 400
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 500 {object} error
 // @Router /accounts [post]
 func (ac *AccountController) Create(ctx *gin.Context) {
 
@@ -53,9 +57,9 @@ func (ac *AccountController) Create(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 204
-// @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
 // @Router /accounts/:id [delete]
 func (ac *AccountController) Delete(ctx *gin.Context) {
 
@@ -86,9 +90,9 @@ func (ac *AccountController) Delete(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} database.Account
-// @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
 // @Router /accounts/:id [get]
 func (accountController *AccountController) FetchById(ctx *gin.Context) {
 
@@ -120,7 +124,7 @@ func (accountController *AccountController) FetchById(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} database.Account
-// @Failure 500
+// @Failure 500 {object} error
 // @Router /accounts [get]
 func (ac *AccountController) List(ctx *gin.Context) {
 	accounts, err := ac.service.List()
@@ -140,9 +144,9 @@ func (ac *AccountController) List(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} database.Account
-// @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
 // @Router /accounts/:id [put]
 func (ac *AccountController) Update(ctx *gin.Context) {
 
@@ -162,7 +166,6 @@ func (ac *AccountController) Update(ctx *gin.Context) {
 	account.ID = uint(id)
 
 	if err := ac.service.Update(&account); err != nil {
-
 		if errors.Is(err, database.ErrNotFound) {
 			ctx.AbortWithStatusJSON(http.StatusNotFound, NewError(fmt.Sprintf("Account with ID %d not found", id)))
 			return

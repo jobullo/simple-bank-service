@@ -26,10 +26,11 @@ func NewTransactionController(service *service.TransactionService) *TransactionC
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
+// @Param transaction body database.Transaction true "Create Transaction"
 // @Success 200 {object} database.Transaction
-// @Failure 400
-// @Failure 409
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 409 {object} error
+// @Failure 500 {object} error
 // @Router /transactions [post]
 func (tc *TransactionController) Create(ctx *gin.Context) {
 	var transaction database.Transaction
@@ -60,11 +61,11 @@ func (tc *TransactionController) Create(ctx *gin.Context) {
 // @Tags Tranasctions
 // @Security ApiKeyAuth
 // @Accept  json
-// @Produce no content
+// @Produce json
 // @Success 204
-// @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
 // @Router /transactions/:id [delete]
 func (tc *TransactionController) Delete(ctx *gin.Context) {
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -94,9 +95,9 @@ func (tc *TransactionController) Delete(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 204 {object} database.Transaction
-// @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
 // @Router /transactions/:id [get]
 func (transactionController *TransactionController) FetchById(ctx *gin.Context) {
 
@@ -131,7 +132,7 @@ func (transactionController *TransactionController) FetchById(ctx *gin.Context) 
 // @Accept  json
 // @Produce  json
 // @Success 200 {array} database.Transaction
-// @Failure 500
+// @Failure 500 {object} error
 // @Router /transactions [get]
 func (transactionController *TransactionController) List(ctx *gin.Context) {
 
@@ -152,9 +153,9 @@ func (transactionController *TransactionController) List(ctx *gin.Context) {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} database.Transaction
-// @Failure 400
-// @Failure 404
-// @Failure 500
+// @Failure 400 {object} error
+// @Failure 404 {object} error
+// @Failure 500 {object} error
 // @Router /transactions/:id [put]
 func (transactionController *TransactionController) Update(ctx *gin.Context) {
 

@@ -13,10 +13,6 @@ definitions:
         type: string
       id:
         type: integer
-      transactions:
-        items:
-          $ref: '#/definitions/database.Transaction'
-        type: array
       updatedAt:
         type: string
     required:
@@ -75,6 +71,7 @@ paths:
             type: array
         "500":
           description: Internal Server Error
+          schema: {}
       security:
       - ApiKeyAuth: []
       summary: list all account records
@@ -84,6 +81,13 @@ paths:
       consumes:
       - application/json
       description: creates an account record in the DB
+      parameters:
+      - description: create account
+        in: body
+        name: account
+        required: true
+        schema:
+          $ref: '#/definitions/database.Account'
       produces:
       - application/json
       responses:
@@ -93,8 +97,10 @@ paths:
             $ref: '#/definitions/database.Account'
         "400":
           description: Bad Request
+          schema: {}
         "500":
           description: Internal Server Error
+          schema: {}
       security:
       - ApiKeyAuth: []
       summary: create an account record
@@ -112,10 +118,13 @@ paths:
           description: No Content
         "400":
           description: Bad Request
+          schema: {}
         "404":
           description: Not Found
+          schema: {}
         "500":
           description: Internal Server Error
+          schema: {}
       security:
       - ApiKeyAuth: []
       summary: delete an account record
@@ -134,13 +143,41 @@ paths:
             $ref: '#/definitions/database.Account'
         "400":
           description: Bad Request
+          schema: {}
         "404":
           description: Not Found
+          schema: {}
         "500":
           description: Internal Server Error
+          schema: {}
       security:
       - ApiKeyAuth: []
       summary: fetches an account record by id
+      tags:
+      - Accounts
+    put:
+      consumes:
+      - application/json
+      description: updates an account record in the DB
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Account'
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: update an account record
       tags:
       - Accounts
   /auth/login:
@@ -191,12 +228,69 @@ paths:
             type: array
         "500":
           description: Internal Server Error
+          schema: {}
       security:
       - ApiKeyAuth: []
       summary: list all transaction records
       tags:
       - Tranasctions
+    post:
+      consumes:
+      - application/json
+      description: allows a transaction to be created in the database if the account
+        exists
+      parameters:
+      - description: Create Transaction
+        in: body
+        name: transaction
+        required: true
+        schema:
+          $ref: '#/definitions/database.Transaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/database.Transaction'
+        "400":
+          description: Bad Request
+          schema: {}
+        "409":
+          description: Conflict
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: create a transaction record
+      tags:
+      - Tranasctions
   /transactions/:id:
+    delete:
+      consumes:
+      - application/json
+      description: allows a transaction to be deleted from the database
+      produces:
+      - application/json
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema: {}
+        "404":
+          description: Not Found
+          schema: {}
+        "500":
+          description: Internal Server Error
+          schema: {}
+      security:
+      - ApiKeyAuth: []
+      summary: delete a transaction record
+      tags:
+      - Tranasctions
     get:
       consumes:
       - application/json
@@ -210,10 +304,13 @@ paths:
             $ref: '#/definitions/database.Transaction'
         "400":
           description: Bad Request
+          schema: {}
         "404":
           description: Not Found
+          schema: {}
         "500":
           description: Internal Server Error
+          schema: {}
       security:
       - ApiKeyAuth: []
       summary: delete a transaction record
@@ -232,10 +329,13 @@ paths:
             $ref: '#/definitions/database.Transaction'
         "400":
           description: Bad Request
+          schema: {}
         "404":
           description: Not Found
+          schema: {}
         "500":
           description: Internal Server Error
+          schema: {}
       security:
       - ApiKeyAuth: []
       summary: update the amount of a transaction record
