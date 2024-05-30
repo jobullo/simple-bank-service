@@ -95,7 +95,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/accounts/:id": {
+        "/accounts/{id}": {
             "get": {
                 "security": [
                     {
@@ -113,6 +113,15 @@ const docTemplate = `{
                     "Accounts"
                 ],
                 "summary": "fetches an account record by id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -151,6 +160,15 @@ const docTemplate = `{
                     "Accounts"
                 ],
                 "summary": "update an account record",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -189,6 +207,15 @@ const docTemplate = `{
                     "Accounts"
                 ],
                 "summary": "delete an account record",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "account ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"
@@ -275,6 +302,15 @@ const docTemplate = `{
                     "Tranasctions"
                 ],
                 "summary": "list all transaction records",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -341,7 +377,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/transactions/:id": {
+        "/transactions/{id}": {
             "get": {
                 "security": [
                     {
@@ -359,6 +395,15 @@ const docTemplate = `{
                     "Tranasctions"
                 ],
                 "summary": "delete a transaction record",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content",
@@ -397,6 +442,15 @@ const docTemplate = `{
                     "Tranasctions"
                 ],
                 "summary": "update the amount of a transaction record",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -435,6 +489,15 @@ const docTemplate = `{
                     "Tranasctions"
                 ],
                 "summary": "delete a transaction record",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "transaction ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "204": {
                         "description": "No Content"

@@ -6,7 +6,7 @@ import (
 
 type Transaction struct {
 	gorm.Model          //leaving this ananymous field here so gorm:embedded tag isn't necessary
-	AccountID  uint32   `json:"accountID" binding:"required"`
+	AccountID  uint     `json:"accountID" binding:"required"`
 	Account    *Account `json:"account"`
 	Type       string   `json:"transactionType" binding:"required"`
 	Amount     float64  `json:"transactionAmount" binding:"required"`

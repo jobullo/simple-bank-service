@@ -3,8 +3,6 @@
 # Simple Banking Service Example
 This project leverages the Golang API Scafold by [Chris Fryer](https://github.com/cfryerdev/golang-api-scaffold) and a design pattern from [Kenny McClive's](https://github.com/kmcclive/go-api-pattern) example project
 
-Recently updated to reflect changes in GO 1.22.X.
-
 ## Technologies
 Here is a list of the technologies used in this project:
 * We use GIN for http routing.
@@ -35,12 +33,17 @@ Here is an overall layout of what endpoints come with this architecture:
 ```bash
 go mod vendor
 ```
+## Switching between application types
+* open the main.go file and change the runtime import line to include the path to the package with execute method is that you want to run 
 
 ## Running Api locally
 ```bash
 go run main.go
 ```
 Visit: `http://localhost:8080/swagger/index.html`
+
+## Running CLI (default) 
+* follow the prompts and instructions from the console.  
 
 ## Setting up postgres in docker
 ```bash

@@ -89,9 +89,39 @@ func (ts *AccountService) Update(account *database.Account) error {
 func (s *AccountService) Delete(id uint) error {
 	var account database.Account
 
+	//first check that the account exists
 	if resp := s.db.First(&account, id); errors.Is(resp.Error, gorm.ErrRecordNotFound) {
 		return database.ErrNotFound
 	}
 
-	return s.db.Delete(&account).Error
+	//fetch associated transactions
+	var transactions []database.Transaction
+	if err := s.db.Model(&account).Association("Transactions").Find(&transactions).Error; err != nil {
+		return err
+	}
+
+	//inline function to handle the deletion of the account and its associated transactions
+	deleteAllAccountData := func(db *gorm.DB) error {
+
+		// Delete each transaction
+		for _, transaction := range transactions {
+			if err := s.db.Delete(&transaction).Error; err != nil {
+				return err
+			}
+		}
+
+		// Delete the account
+		if err := s.db.Delete(&account).Error; err != nil {
+			return err
+		}
+
+		return nil
+	}
+
+	//will roll back the transaction if an error is returned by deleteAllAccountData
+	if err := s.db.Transaction(deleteAllAccountData); err != nil {
+		return err
+	}
+
+	return nil
 }

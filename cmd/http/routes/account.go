@@ -21,15 +21,12 @@ func NewAccountController(service *service.AccountService) *AccountController {
 }
 
 // @Summary create an account record
-// @api {post} /accounts
-// @apiName CreateAccount
-// @apiGroup Accounts
-// @Param account body database.Account true "create account"
 // @Description creates an account record in the DB
 // @Tags Accounts
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
+// @Param account body database.Account true "create account"
 // @Success 200 {object} database.Account
 // @Failure 400 {object} error
 // @Failure 500 {object} error
@@ -55,12 +52,13 @@ func (ac *AccountController) Create(ctx *gin.Context) {
 // @Tags Accounts
 // @Security ApiKeyAuth
 // @Accept  json
-// @Produce  json
+// @Produce json
+// @Param id path int true "account ID"
 // @Success 204
 // @Failure 400 {object} error
 // @Failure 404 {object} error
 // @Failure 500 {object} error
-// @Router /accounts/:id [delete]
+// @Router /accounts/{id} [delete]
 func (ac *AccountController) Delete(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -89,11 +87,12 @@ func (ac *AccountController) Delete(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
+// @Param id path int true "account ID"
 // @Success 200 {object} database.Account
 // @Failure 400 {object} error
 // @Failure 404 {object} error
 // @Failure 500 {object} error
-// @Router /accounts/:id [get]
+// @Router /accounts/{id} [get]
 func (accountController *AccountController) FetchById(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)
@@ -143,11 +142,12 @@ func (ac *AccountController) List(ctx *gin.Context) {
 // @Security ApiKeyAuth
 // @Accept  json
 // @Produce  json
+// @Param id path int true "account ID"
 // @Success 200 {object} database.Account
 // @Failure 400 {object} error
 // @Failure 404 {object} error
 // @Failure 500 {object} error
-// @Router /accounts/:id [put]
+// @Router /accounts/{id} [put]
 func (ac *AccountController) Update(ctx *gin.Context) {
 
 	id, err := strconv.ParseUint(ctx.Param("id"), 10, 32)

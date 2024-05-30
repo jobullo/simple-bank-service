@@ -22,7 +22,7 @@ func NewTransactionService(db *gorm.DB, accountService AccountService) *Transact
 // implements the create a new transaction method of the transaction service interface
 func (ts *TransactionService) Create(transaction *database.Transaction) error {
 	//check that the account exists
-	account, err := ts.accountService.FetchById(uint(transaction.AccountID))
+	account, err := ts.accountService.FetchById(transaction.AccountID)
 	if err != nil {
 		if errors.Is(err, database.ErrNotFound) {
 			return database.ErrParentNotFound
@@ -104,7 +104,7 @@ func (ts *TransactionService) list(criteria *database.Transaction) (*[]database.
 }
 
 func (ts *TransactionService) ListByAccount(accountID uint) (*[]database.Transaction, error) {
-	criteria := database.Transaction{AccountID: uint32(accountID)}
+	criteria := database.Transaction{AccountID: accountID}
 	return ts.list(&criteria)
 }
 
