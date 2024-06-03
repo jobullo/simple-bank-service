@@ -1,7 +1,7 @@
 
 
 # Simple Banking Service Example
-This project leverages the Golang API Scafold by [Chris Fryer](https://github.com/cfryerdev/golang-api-scaffold) and a design pattern from [Kenny McClive's](https://github.com/kmcclive/go-api-pattern) example project
+This project leverages the Golang API Scafold by [Chris Fryer](https://github.com/cfryerdev/golang-api-scaffold) and design patterns from [Kenny McClive's](https://github.com/kmcclive/go-api-pattern) example project
 
 ## Technologies
 Here is a list of the technologies used in this project:
@@ -34,7 +34,7 @@ Here is an overall layout of what endpoints come with this architecture:
 go mod vendor
 ```
 ## Switching between application types
-* open the main.go file and change the runtime import line to include the path to the package with execute method is that you want to run 
+* open the main.go file and change the runtime import line to include the path to the package with the execute function that you want to run 
 
 ## Running Api locally
 ```bash
