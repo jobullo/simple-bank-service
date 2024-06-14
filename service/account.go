@@ -100,7 +100,7 @@ func (as *AccountService) Delete(id uint) error {
 		return err
 	}
 
-	//inline function to handle the deletion of the account and ias associated transactions
+	//inline function to handle the deletion of the account and its associated transactions
 	deleteAllAccountData := func(db *gorm.DB) error {
 
 		// Delete each transaction
