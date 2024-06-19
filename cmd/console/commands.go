@@ -165,7 +165,7 @@ func handleTransactionOperations(command string, argMap map[string]string, db *g
 		}
 
 		transactionType := argMap["type"]
-		transaction := database.Transaction{AccountID: uint32(account), Amount: amount, Type: transactionType}
+		transaction := database.Transaction{AccountID: uint(account), Amount: amount, Type: transactionType}
 
 		if error := newTransactionService.Create(&transaction); error != nil {
 			fmt.Println("  Error creating transaction:", error)

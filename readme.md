@@ -45,12 +45,10 @@ Visit: `http://localhost:8080/swagger/index.html`
 ## Running CLI (default) 
 * follow the prompts and instructions from the console.  
 
-## Setting up postgres in docker
-```bash
-docker run --name pgdb -p 5432:5432 -e POSTGRES_PASSWORD=P4ssw0rd -e POSTGRES_DB=bankExample -d postgres
+## Using makefile
+to see the available targets and their uses, run the following command in the root directory of the project:
+``` bash
+make help
 ```
+you can start and stop the postgres container by running make on the startdb and stopdb targets
 
-## setting up an interactive shell into the container
-```bash 
-docker exec -it <container id> psql -U postgres -d bankExample
-```
